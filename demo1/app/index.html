@@ -1,0 +1,146 @@
+<html>
+<head>
+	<title>剪刀石头布</title>
+	<meta charset="utf-8"/>
+	<style type="text/css">
+		.content {
+			background-color: rgb(117, 150 ,253);
+			width: 800px;
+			height: 400px;
+			margin: auto;
+			padding: 20px;
+		}
+		.userChoice{
+			margin: auto;
+			width: 600px;
+			margin-top: 50px;
+		}
+		img {
+			margin-left: 20px;
+		}
+		.userChoice img:hover{
+			cursor: pointer;
+		}
+
+		.result{
+			margin: auto;
+			width: 600px;
+			margin-top: 50px;
+
+		}
+
+		.result span{
+			font-size: 20px;
+			font-weight: bold;
+			margin-left: 20px;
+			position: relative;
+			top:-80px;
+		}
+		.result h1:hover{
+			cursor: pointer;
+		}
+
+		ul{
+			list-style: none;
+			margin-left: 50px;
+		}
+		ul li{
+			float: left;
+			width:50%;
+		}
+		.clearfloat{
+			clear:both;
+		}
+	</style>
+</head>
+<body>
+	<div class="content">
+		<ul>
+			<li>
+				<p>请出拳吧，少年！</p>
+			</li>
+			<li class="winnum">
+				<p></p>
+			</li>
+		</ul>
+		<div class="clearfloat"></div>
+		<div class="userChoice">
+			
+			<img src="img/jiandao.jpg" value="1">
+			<img src="img/shitou.jpg" value="2">
+			<img src="img/bu.jpg" value="3">
+	
+		</div>
+
+
+		<div class="result">
+			
+		</div>
+
+	</div>
+	
+</body>
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/jquery.cookie.js"></script>
+<script type="text/javascript">
+
+	function computerChoice(){
+		var random = Math.floor(Math.random() * 3) + 1;
+
+		return random;
+	}
+
+	$("img").click(function(){
+		//alert($(this).attr("value"));
+		var userChoice = $(this).attr("value");
+		var computerChoice = window.computerChoice();
+		//alert(computerChoice);
+		var str = "<h1>Try Again!</h1>";
+		str += "<img src='"+$(this).attr("src")+"'>";
+		
+		if((userChoice - computerChoice + 3) %3 == 1) {
+			//alert("user win");
+			str += "<span>You Win!!!</span>";
+		//	alert($.cookie("winnum"));
+			//$.cookie("winnum",$.cookie("winnum")+1);
+			//$(".winnum p").html("你已经获胜了"+$.cookie("winnum")+"次");
+		}else if(userChoice == computerChoice) {
+			//alert("again");
+			str += "<span>Again!!!</span>";
+		}else {
+			//alert("you lose");
+			str += "<span>You Lose!!!</span>";
+		}
+
+		if(computerChoice == 1){
+			str += "<img src='img/jiandao.jpg'>";
+		}else if(computerChoice == 2){
+			str += "<img src='img/shitou.jpg'>";
+		}else {
+			str += "<img src='img/bu.jpg'>";
+		}
+		
+		
+		$(".userChoice").css("display","none");
+		$(".result").append(str);
+	});
+
+	$(".result").on("click", "h1", function(){
+		
+		$(".userChoice").css("display","block");
+		$(".result").empty();
+	});
+
+	$(document).ready(function(){
+		
+		if($.cookie("winnum") == undefined) {
+			$(".winnum p").html("你已经获胜了0次");
+			$.cookie("winnum","aa", { path: '/', expires: 10 });
+			var winnum = $.cookie("winnum");
+			alert(winnum);
+		}else{
+			$(".winnum p").html("你已经获胜了"+$.cookie("winnum")+"次");
+		}
+	});
+</script>
+</html>
