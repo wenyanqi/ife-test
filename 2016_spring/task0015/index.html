@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>IFE JavaScript Task 01</title>
+</head>
+<body>
+	<ul id="source">
+		<li>北京空气质量：<b>90</b></li>
+		<li>上海空气质量：<b>70</b></li>
+		<li>天津空气质量：<b>80</b></li>
+		<li>广州空气质量：<b>50</b></li>
+		<li>深圳空气质量：<b>40</b></li>
+		<li>福州空气质量：<b>32</b></li>
+		<li>成都空气质量：<b>90</b></li>
+	</ul>
+
+	<ul id="resort">
+	<!-- 
+	<li>第一名：北京空气质量：<b>90</b></li>
+	<li>第二名：北京空气质量：<b>90</b></li>
+	<li>第三名：北京空气质量：<b>90</b></li>
+	 -->
+
+	</ul>
+
+	<button id="sort-btn">排序</button>
+
+
+	<script type="text/javascript">
+
+	function getData() {
+		var liElement = document.getElementById("source").childNodes;
+		console.log();
+		var datas = [];
+
+		var length = liElement.length;
+		var lidata = [];
+		for(var i=0; i<length; i++) {
+			if(liElement[i].nodeType === 1) {
+				lidata.push(liElement[i]);
+			}
+		}
+
+		lidata.forEach(function(element,index,array) {
+			var data = [];
+			
+			data.push(element.innerHTML.slice(0,2));
+
+			data.push(element.childNodes[1].innerHTML);
+			datas.push(data);
+		});
+	
+		return datas;
+
+	}
+
+	function sortAqiData(datas) {
+		datas = datas.sort(function(value1, value2) {
+
+			if(value1[1] > value2[1]) {
+				return -1;
+			} else if(value1[1] < value2[1]) {
+				return 1;
+			} else {
+				return 0;
+			}
+		});
+		return datas;
+	}
+
+	function render(data) {
+		var ulElement = document.getElementById("source");
+
+		data.forEach(function(value, index, array) {
+			var liElement = document.createElement("li");
+			liElement.innerHTML = value[0] + "," + value[1];
+			ulElement.appendChild(liElement);
+		})
+	}
+
+	function btnHandle() {
+		var aqidata = getData();
+		
+		aqidata = sortAqiData(aqidata);
+		//console.log(aqidata);
+		render(aqidata);
+	}
+
+	function init() {
+		var botton = document.getElementById("sort-btn");
+		botton.addEventListener("click", btnHandle, false);
+	}
+
+	init();
+
+	</script>
+</body>
+</html>
