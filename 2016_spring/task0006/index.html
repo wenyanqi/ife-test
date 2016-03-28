@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>task0006</title>
+	<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+	<div class="main">
+		<div class="head">
+			<div class="headinfo">ife.baidu.com</div>
+			<span class="timeinfo"></span>
+		</div>
+		<div class="line"></div>
+		<div class="container">
+			
+		</div>
+	</div>
+	<script type="text/javascript">
+	//var sUrl = "http://www.nowcoder.com?key=1&key=2&key=3&test=4#hehe";
+	var sUrl = "http://www.nowcoder.com?";
+	console.log(getUrlParam(sUrl,"test"));
+	function getUrlParam(sUrl, sKey) {
+		if(sUrl.indexOf("?")<0){
+			return {};
+		}
+	    var split_temp = sUrl.split("?");
+	    var para_temp = split_temp[1].split("#");
+	    var para_array = para_temp[0].split("&");
+	    var resultArray = new Array();
+	    var count=0;
+	    for(var i=0;i<para_array.length;i++) {
+	        var para = para_array[i].split("=");
+	        if(para[0]==sKey) {
+	            resultArray[count++] = para[1];
+	        }
+	    }
+	    if(count==1) {
+	        return resultArray[0];
+	    }else if(count==0) {
+	        return {};
+	    }else {
+	        return resultArray;
+	    }
+	}
+	</script>
+</body>
+</html>
