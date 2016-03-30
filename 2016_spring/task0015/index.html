@@ -74,7 +74,7 @@
 
 		data.forEach(function(value, index, array) {
 			var liElement = document.createElement("li");
-			liElement.innerHTML = value[0] + "," + value[1];
+			liElement.innerHTML = value[0] + "空气质量:<b>" + value[1] + "</b>";
 			ulElement.appendChild(liElement);
 		})
 	}
