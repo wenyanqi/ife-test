@@ -49,7 +49,7 @@ var chartData = {};
 
 // 记录当前页面的表单选项
 var pageState = {
-  nowSelectCity: -1,
+  nowSelectCity: 0,
   nowGraTime: "day"
 }
 
@@ -58,11 +58,36 @@ var pageState = {
  */
 function renderChart() {
   var dataArray = chartData.data;
-  if(pageState.nowGraTime == "day") {
 
+  var len = chartData.data.length;
+  var rectwidth = parseInt(800/dataArray.length);
+  
+  
+  var svgElement = document.getElementsByTagName("svg")[0];
+  svgElement.innerHTML = "";
+  var xmlns = "http://www.w3.org/2000/svg";
+  for(var i=0;i<len;i++) {
+      var rect = document.createElementNS(xmlns, "rect");
+      rect.setAttribute("x", 50+rectwidth*i);
+      rect.setAttribute("y", 550-dataArray[i].data);
+      rect.setAttribute("height", dataArray[i].data);
+      rect.setAttribute("width",rectwidth);
+      rect.setAttribute("data-dateinfo",dataArray[i].dateinfo);
+
+      switch(i%3) {
+      case 0: rect.setAttribute("class", "color1"); 
+          break;
+      case 1: rect.setAttribute("class", "color2"); 
+          break;
+      case 2: rect.setAttribute("class", "color3"); 
+          break;
+      }
+      svgElement.appendChild(rect);
   }
   
 }
+
+
 
 /**
  * 日、周、月的radio事件点击时的处理函数
@@ -97,7 +122,8 @@ function handleData() {
   if (pageState.nowGraTime == "day") {
 
       for (var key in allData) {
-        dataArray.push(allData[key]);
+
+        dataArray.push({"dateinfo":key,"data":allData[key]});
       }
 
   } else if (pageState.nowGraTime == "week") {
@@ -203,6 +229,9 @@ function initCitySelector() {
 function initAqiChartData() {
   // 将原始的源数据处理成图表需要的数据格式
   // 处理好的数据存到 chartData 中
+  handleData();
+
+  renderChart();
 }
 
 /**
@@ -212,6 +241,22 @@ function init() {
   initGraTimeForm()
   initCitySelector();
   initAqiChartData();
+  
+  var svgElement = document.getElementsByTagName("svg")[0];
+  var titleElement = document.getElementById("title");
+  svgElement.addEventListener("mouseover",function(EventEmitter){
+    if(event.target.nodeName == "rect") {
+      var rectElement = event.target;
+      titleElement.innerHTML = rectElement.getAttribute("data-dateinfo")+" "+rectElement.getAttribute("height");
+      
+      titleElement.style.left = event.clientX;
+      titleElement.style.top = Number(event.clientY)-30+"px";
+      titleElement.style.display = "block";
+    }
+    
+  });
+
+  
 }
 
 window.onload = init;

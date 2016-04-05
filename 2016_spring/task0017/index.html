@@ -3,6 +3,48 @@
   <head>
     <meta charset="utf-8">
     <title>IFE JavaScript Task 17</title>
+    <style type="text/css">
+    svg{
+      background-color: #e1e8f0;  
+    }
+    .line_large {
+      stroke-width: 50;
+    }
+    .line_medium {
+      stroke-width: 30;
+    }
+    .line_small {
+      stroke-width: 10;
+    }
+    .width_large {
+      width: 50px;
+    }
+    .width_medium {
+      width: 30px;
+    }
+    .width_small {
+      width: 15px;
+    }
+    .color1 {
+      fill: #f79f79;
+    }
+    .color2 {
+      fill: #f7d08a;
+    }
+    .color3 {
+      fill: #e3f;
+    }
+    #title {
+
+      background-color: #CDDC39;
+      width: 100px;
+      height: 40px;
+      opacity: 0.8;
+      border-radius: 10px;
+      position: absolute;
+      display: none;
+    }
+  </style>
     <script src="task.js"></script>
   </head>
 <body>
@@ -21,7 +63,13 @@
   </fieldset>
 
   <div class="aqi-chart-wrap">
+    <svg version="1.1"
+     baseProfile="full"
+     width="900"
+     height="600">    
     
+  </svg>
   </div>
+  <div id="title"></div>
 </body>
 </html>
