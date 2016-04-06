@@ -60,31 +60,34 @@ function renderChart() {
   var dataArray = chartData.data;
 
   var len = chartData.data.length;
-  var rectwidth = parseInt(800/dataArray.length);
-  
-  
+  var rectwidth = parseInt(800 / dataArray.length);
   var svgElement = document.getElementsByTagName("svg")[0];
+
   svgElement.innerHTML = "";
   var xmlns = "http://www.w3.org/2000/svg";
-  for(var i=0;i<len;i++) {
-      var rect = document.createElementNS(xmlns, "rect");
-      rect.setAttribute("x", 50+rectwidth*i);
-      rect.setAttribute("y", 550-dataArray[i].data);
-      rect.setAttribute("height", dataArray[i].data);
-      rect.setAttribute("width",rectwidth);
-      rect.setAttribute("data-dateinfo",dataArray[i].dateinfo);
 
-      switch(i%3) {
-      case 0: rect.setAttribute("class", "color1"); 
-          break;
-      case 1: rect.setAttribute("class", "color2"); 
-          break;
-      case 2: rect.setAttribute("class", "color3"); 
-          break;
-      }
-      svgElement.appendChild(rect);
+  for (var i = 0; i < len; i++) {
+    var rect = document.createElementNS(xmlns, "rect");
+    rect.setAttribute("x", 50 + rectwidth * i);
+    rect.setAttribute("y", 550 - dataArray[i].data);
+    rect.setAttribute("height", dataArray[i].data);
+    rect.setAttribute("width", rectwidth);
+    rect.setAttribute("data-dateinfo", dataArray[i].dateinfo);
+
+    switch (i % 3) {
+      case 0:
+        rect.setAttribute("class", "color1");
+        break;
+      case 1:
+        rect.setAttribute("class", "color2");
+        break;
+      case 2:
+        rect.setAttribute("class", "color3");
+        break;
+    }
+    svgElement.appendChild(rect);
   }
-  
+
 }
 
 
@@ -118,47 +121,76 @@ function graTimeChange() {
 function handleData() {
   chartData = {};
   var allData = aqiSourceData[pageState.nowSelectCity];
+
   var dataArray = [];
   if (pageState.nowGraTime == "day") {
 
-      for (var key in allData) {
-
-        dataArray.push({"dateinfo":key,"data":allData[key]});
-      }
+    for (var key in allData) {
+      dataArray.push({
+        "dateinfo": key,
+        "data": allData[key]
+      });
+    }
 
   } else if (pageState.nowGraTime == "week") {
-   
-    var k = 0, len = allData.length;
-    var averge = 0,
-        count = 0;
-    for (var key in allData) {
-      var date = new Date(key);
 
+    var k = 0,
+      len = allData.length;
+    var averge = 0,
+      count = 0;
+    var startDate, date;
+    for (var key in allData) {
+      date = new Date(key);
+      if (startDate == undefined) {
+        startDate = date;
+      }
+
+      averge += allData[key];
+      count++;
       if (date.getDay() == 0) {
         if (count != 0) {
-          dataArray.push(parseInt(averge / count));
-          averge = allData[key];
-          count = 1;
+
+          dataArray.push({
+            "dateinfo": getDateStr(startDate) + "到" + getDateStr(date),
+            "data": parseInt(averge / count)
+          });
+          averge = 0;
+          count = 0;
+          startDate = undefined;
         }
-      } else {
-        averge += allData[key];
-        count++;
       }
     }
-    dataArray.push(parseInt(averge / count));
+    if (date.getDay() != 0) {
+      dataArray.push({
+        "dateinfo": getDateStr(startDate) + "到" + getDateStr(date),
+        "data": parseInt(averge / count)
+      });
+    }
+
 
   } else if (pageState.nowGraTime == "month") {
     var k = 0,
       len = allData.length;
     var averge = 0,
       count = 0;
+    var startDate, endDate, date;
     for (var key in allData) {
-      var date = new Date(key);
-
+      date = new Date(key);
+      if (startDate == undefined) {
+        startDate = date;
+      }
       if (date.getDate() == 1) {
         if (count != 0) {
-          dataArray.push(parseInt(averge / count));
+
+          date.setDate(date.getDate() - 1);
+          dataArray.push({
+            "dateinfo": getDateStr(startDate) + "到" + getDateStr(date),
+            "data": parseInt(averge / count)
+          });
+          date.setDate(date.getDate() + 1);
+          startDate = date;
           averge = allData[key];
+
           count = 1;
         }
       } else {
@@ -166,11 +198,18 @@ function handleData() {
         count++;
       }
     }
-    dataArray.push(parseInt(averge / count));
-  
+    if (date.getDate() != 1) {
+
+      dataArray.push({
+        "dateinfo": getDateStr(startDate) + "到" + getDateStr(date),
+        "data": parseInt(averge / count)
+      });
+    }
+
+
   }
   chartData.data = dataArray;
-  console.log(chartData);
+
 }
 
 /**
@@ -229,6 +268,7 @@ function initCitySelector() {
 function initAqiChartData() {
   // 将原始的源数据处理成图表需要的数据格式
   // 处理好的数据存到 chartData 中
+  pageState.nowSelectCity = "北京";
   handleData();
 
   renderChart();
@@ -241,22 +281,22 @@ function init() {
   initGraTimeForm()
   initCitySelector();
   initAqiChartData();
-  
+
   var svgElement = document.getElementsByTagName("svg")[0];
   var titleElement = document.getElementById("title");
-  svgElement.addEventListener("mouseover",function(EventEmitter){
-    if(event.target.nodeName == "rect") {
+  svgElement.addEventListener("mouseover", function(EventEmitter) {
+    if (event.target.nodeName == "rect") {
       var rectElement = event.target;
-      titleElement.innerHTML = rectElement.getAttribute("data-dateinfo")+" "+rectElement.getAttribute("height");
-      
+      titleElement.innerHTML = rectElement.getAttribute("data-dateinfo") + " " + rectElement.getAttribute("height");
+
       titleElement.style.left = event.clientX;
-      titleElement.style.top = Number(event.clientY)-30+"px";
+      titleElement.style.top = rectElement.getAttribute("y") + "px";
       titleElement.style.display = "block";
     }
-    
+
   });
 
-  
+
 }
 
 window.onload = init;
